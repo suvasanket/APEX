@@ -7,6 +7,7 @@
 
 ## 2. CHECKLIST & VERIFICATION
 - Work atomic: 1 item `- [ ]` at a time.
+- Commands: ALWAYS prefer `make` targets (`make test`, `make verify-stage-X`, `make clean`).
 - Run verify command. Exit code 0 REQUIRED before marking `- [x]`.
 - Stage gate: All items `- [x]` + full test suite exit 0 -> notify user -> advance `plan/CURRENT_STAGE.md`.
 
@@ -22,6 +23,7 @@
 - NO `pip install`, NO `brew install` Ask if required.
 - Any pip install always in local project scope NO global.
 - Stack: Python 3.11+, local PostgreSQL, Playwright async, FastAPI, Pydantic v2.
+- Tooling: `make` drives all testing and execution via `.venv/bin/python`.
 
 ## 5. CODEBASE INDEX PROTOCOL (`CODEBASE_INDEX.md`)
 - Scope: Codebase structure ONLY (files, symbols, tables, fixtures). ZERO plan/roadmap data.
@@ -35,5 +37,6 @@
 3. Check `CODEBASE_INDEX.md` for existing symbols.
 4. Implement 1 item `- [ ]`.
 5. Update `CODEBASE_INDEX.md` if new file/symbol added.
-6. Run verify command. Exit 0 -> mark `- [x]`.
+6. Run `make` verify command. Exit 0 -> mark `- [x]`.
 7. Repeat or report stage gate.
+

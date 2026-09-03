@@ -18,7 +18,8 @@ APEX/
 ├── docs/               # Schemas & methodology specs
 ├── tests/              # Fixtures, unit, synthetic tests
 ├── AGENTS.md           # Agent operational protocol
-└── CODEBASE_INDEX.md   # This file
+├── CODEBASE_INDEX.md   # This file
+└── Makefile            # Command runner & test verification targets
 ```
 
 ## 2. PACKAGE REGISTRY
@@ -36,6 +37,10 @@ APEX/
 - `FareObservation`: Canonical immutable observation (flight identity, fare breakdown, raw hash, status).
 - `FlightIdentity`: Airline, flight number, origin, destination, departure time, stops.
 - `FareBreakdown`: Currency (INR), base fare, taxes, fees, total payable fare.
+- `BookingDimension`: Booking window, advance days, cabin class (economy), fare family.
+- `SourceInfo`: Scraper source code, source type (airline_direct/ota), run ID.
+- `RawAudit`: Raw unmutated payload snippet and verified SHA-256 hash.
+- `calculate_observation_target_date`: Computes flight target date from collection date and window.
 
 ### Collectors (`apex.collectors`)
 - `BaseCollector`: Abstract scraper class (`collect_route(origin, dest, date, window) -> CollectorResult`).

@@ -1,0 +1,314 @@
+{
+  "$defs": {
+    "BookingDimension": {
+      "additionalProperties": false,
+      "description": "Booking advance and cabin dimensions.",
+      "properties": {
+        "booking_window": {
+          "$ref": "#/$defs/BookingWindow",
+          "description": "Observation lead-time window (T+1, T+7, T+15, T+30, T+45)"
+        },
+        "advance_days": {
+          "description": "Exact number of days prior to departure",
+          "minimum": 0,
+          "title": "Advance Days",
+          "type": "integer"
+        },
+        "cabin_class": {
+          "const": "economy",
+          "default": "economy",
+          "description": "Cabin class, strictly 'economy' for V1 index standard",
+          "title": "Cabin Class",
+          "type": "string"
+        },
+        "fare_family": {
+          "description": "Airline fare tier name (e.g. Saver, Standard, Flexi)",
+          "minLength": 1,
+          "title": "Fare Family",
+          "type": "string"
+        }
+      },
+      "required": [
+        "booking_window",
+        "advance_days",
+        "fare_family"
+      ],
+      "title": "BookingDimension",
+      "type": "object"
+    },
+    "BookingWindow": {
+      "description": "Standard 5 booking windows for domestic observation.",
+      "enum": [
+        "T+1",
+        "T+7",
+        "T+15",
+        "T+30",
+        "T+45"
+      ],
+      "title": "BookingWindow",
+      "type": "string"
+    },
+    "FareBreakdown": {
+      "additionalProperties": false,
+      "description": "Breakdown of fare components in INR.",
+      "properties": {
+        "currency": {
+          "const": "INR",
+          "default": "INR",
+          "description": "Monetary currency code, strictly 'INR'",
+          "title": "Currency",
+          "type": "string"
+        },
+        "base_fare": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "description": "Base airline passenger fare (>= 0)",
+          "title": "Base Fare"
+        },
+        "taxes": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "description": "Government, GST, and security taxes (>= 0)",
+          "title": "Taxes"
+        },
+        "fees": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "description": "Airport development, user fees, and surcharges (>= 0)",
+          "title": "Fees"
+        },
+        "total_payable_fare": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "description": "Total all-in customer payable fare (base_fare + taxes + fees)",
+          "title": "Total Payable Fare"
+        }
+      },
+      "required": [
+        "base_fare",
+        "taxes",
+        "fees",
+        "total_payable_fare"
+      ],
+      "title": "FareBreakdown",
+      "type": "object"
+    },
+    "FlightIdentity": {
+      "additionalProperties": false,
+      "description": "Immutable physical flight identity.",
+      "properties": {
+        "airline_iata": {
+          "description": "2-character IATA airline code (e.g. 6E, AI, QP, SG)",
+          "pattern": "^[A-Z0-9]{2}$",
+          "title": "Airline Iata",
+          "type": "string"
+        },
+        "flight_number": {
+          "description": "Flight number code (e.g. 6E-2054, AI-102)",
+          "maxLength": 10,
+          "minLength": 3,
+          "title": "Flight Number",
+          "type": "string"
+        },
+        "origin_iata": {
+          "description": "3-letter IATA origin airport code (e.g. DEL)",
+          "pattern": "^[A-Z]{3}$",
+          "title": "Origin Iata",
+          "type": "string"
+        },
+        "destination_iata": {
+          "description": "3-letter IATA destination airport code (e.g. BOM)",
+          "pattern": "^[A-Z]{3}$",
+          "title": "Destination Iata",
+          "type": "string"
+        },
+        "departure_datetime": {
+          "description": "Scheduled departure timestamp in UTC",
+          "format": "date-time",
+          "title": "Departure Datetime",
+          "type": "string"
+        },
+        "arrival_datetime": {
+          "description": "Scheduled arrival timestamp in UTC",
+          "format": "date-time",
+          "title": "Arrival Datetime",
+          "type": "string"
+        },
+        "stops": {
+          "default": 0,
+          "description": "Number of intermediate stops (0 for non-stop)",
+          "minimum": 0,
+          "title": "Stops",
+          "type": "integer"
+        },
+        "is_nonstop": {
+          "default": true,
+          "description": "Flag indicating non-stop service",
+          "title": "Is Nonstop",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "airline_iata",
+        "flight_number",
+        "origin_iata",
+        "destination_iata",
+        "departure_datetime",
+        "arrival_datetime"
+      ],
+      "title": "FlightIdentity",
+      "type": "object"
+    },
+    "ObservationStatus": {
+      "description": "Observation availability status.",
+      "enum": [
+        "AVAILABLE",
+        "SOLD_OUT",
+        "UNAVAILABLE"
+      ],
+      "title": "ObservationStatus",
+      "type": "string"
+    },
+    "RawAudit": {
+      "additionalProperties": false,
+      "description": "Provenance audit trail preserving raw scraper response and cryptographic hash.",
+      "properties": {
+        "raw_payload": {
+          "description": "Exact raw unmutated payload snippet from collection source",
+          "minLength": 1,
+          "title": "Raw Payload",
+          "type": "string"
+        },
+        "raw_hash": {
+          "description": "SHA-256 hex digest of raw_payload",
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "raw_payload",
+        "raw_hash"
+      ],
+      "title": "RawAudit",
+      "type": "object"
+    },
+    "SourceInfo": {
+      "additionalProperties": false,
+      "description": "Collection source provenance.",
+      "properties": {
+        "source_code": {
+          "description": "Scraper/collector source identifier (e.g. indigo_direct)",
+          "minLength": 1,
+          "title": "Source Code",
+          "type": "string"
+        },
+        "source_type": {
+          "$ref": "#/$defs/SourceType",
+          "description": "Source category: airline_direct or ota"
+        },
+        "collection_run_id": {
+          "description": "UUID/identifier of the execution run",
+          "minLength": 1,
+          "title": "Collection Run Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_code",
+        "source_type",
+        "collection_run_id"
+      ],
+      "title": "SourceInfo",
+      "type": "object"
+    },
+    "SourceType": {
+      "description": "Type of collection source.",
+      "enum": [
+        "airline_direct",
+        "ota"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Canonical immutable observation emitted by scrapers and consumed by APEX pipeline.",
+  "properties": {
+    "observation_id": {
+      "description": "Unique identifier for the observation (UUID / prefixed string)",
+      "minLength": 1,
+      "title": "Observation Id",
+      "type": "string"
+    },
+    "collection_timestamp": {
+      "description": "Collection execution timestamp in UTC",
+      "format": "date-time",
+      "title": "Collection Timestamp",
+      "type": "string"
+    },
+    "source_info": {
+      "$ref": "#/$defs/SourceInfo"
+    },
+    "flight_identity": {
+      "$ref": "#/$defs/FlightIdentity"
+    },
+    "booking_dimension": {
+      "$ref": "#/$defs/BookingDimension"
+    },
+    "fare_breakdown": {
+      "$ref": "#/$defs/FareBreakdown"
+    },
+    "raw_audit": {
+      "$ref": "#/$defs/RawAudit"
+    },
+    "status": {
+      "$ref": "#/$defs/ObservationStatus",
+      "default": "AVAILABLE",
+      "description": "Availability status of the fare"
+    }
+  },
+  "required": [
+    "observation_id",
+    "collection_timestamp",
+    "source_info",
+    "flight_identity",
+    "booking_dimension",
+    "fare_breakdown",
+    "raw_audit"
+  ],
+  "title": "FareObservation",
+  "type": "object"
+}

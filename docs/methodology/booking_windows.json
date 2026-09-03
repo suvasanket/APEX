@@ -1,0 +1,32 @@
+[
+  {
+    "window_id": "T+1",
+    "offset_days": 1,
+    "name": "Last Minute",
+    "rationale": "Last-minute distress/surge demand pricing"
+  },
+  {
+    "window_id": "T+7",
+    "offset_days": 7,
+    "name": "Urgent Travel",
+    "rationale": "Short-term business/urgent travel pricing"
+  },
+  {
+    "window_id": "T+15",
+    "offset_days": 15,
+    "name": "Planned Travel",
+    "rationale": "Typical domestic leisure/planned travel pricing"
+  },
+  {
+    "window_id": "T+30",
+    "offset_days": 30,
+    "name": "Medium Range",
+    "rationale": "Medium-range advance purchase baseline"
+  },
+  {
+    "window_id": "T+45",
+    "offset_days": 45,
+    "name": "Long Range Anchor",
+    "rationale": "Long-range advance booking anchor"
+  }
+]

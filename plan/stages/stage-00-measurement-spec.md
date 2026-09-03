@@ -1,6 +1,6 @@
 # Stage 0: Measurement & Data Contract Specification
 
-> **Stage Status**: `ACTIVE`  
+> **Stage Status**: `COMPLETED`  
 > **Prerequisites**: None  
 > **Next Stage**: [Stage 1: Data Acquisition Engine](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-01-data-acquisition.md)
 
@@ -95,19 +95,19 @@ To avoid comparing apples to oranges:
 
 All items below must be implemented and verified before proceeding to Stage 1.
 
-- [ ] **Task 0.1: Define Core Pydantic Domain Models**
+- [x] **Task 0.1: Define Core Pydantic Domain Models**
   - Implement `apex/models/fare.py` with `FareObservation`, `FlightIdentity`, `FareBreakdown`, and validation rules (no negative fares, currency == "INR", departure before arrival).
   - *Verification command*: `python3 -m unittest tests/unit/test_fare_spec.py`
-- [ ] **Task 0.2: Export Canonical JSONSchema**
+- [x] **Task 0.2: Export Canonical JSONSchema**
   - Generate `docs/schemas/fare_observation.json` from the Pydantic model for language-agnostic scraper validation.
   - *Verification command*: `python3 -c "import json; json.load(open('docs/schemas/fare_observation.json'))"`
-- [ ] **Task 0.3: Route Basket Specification**
+- [x] **Task 0.3: Route Basket Specification**
   - Create `docs/methodology/route_basket.json` containing the 5 routes, IATA codes, and initial weights totaling 1.0.
   - *Verification command*: `python3 -c "import json; r=json.load(open('docs/methodology/route_basket.json')); assert len(r)==5 and abs(sum(x['weight'] for x in r)-1.0)<1e-6"`
-- [ ] **Task 0.4: Booking Windows Specification**
+- [x] **Task 0.4: Booking Windows Specification**
   - Create `docs/methodology/booking_windows.json` containing the 5 windows (T+1, T+7, T+15, T+30, T+45) and offset calculator helper.
   - *Verification command*: `python3 -c "import json; w=json.load(open('docs/methodology/booking_windows.json')); assert len(w)==5"`
-- [ ] **Task 0.5: Fixture Test Suite for Contract Compliance**
+- [x] **Task 0.5: Fixture Test Suite for Contract Compliance**
   - Write sample valid and invalid JSON fixtures in `tests/fixtures/observations/`.
   - Validate that invalid observations (negative fare, wrong currency, missing total) raise validation errors.
   - *Verification command*: `python3 -m unittest tests/unit/test_fare_spec.py`
