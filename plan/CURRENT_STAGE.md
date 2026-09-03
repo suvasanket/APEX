@@ -1,14 +1,11 @@
-# Current Active Stage
+# ACTIVE STAGE: STAGE 0
 
-**Current Stage**: `STAGE 0` — **Define the Measurement & Data Contract**  
-**Specification Document**: [`plan/stages/stage-00-measurement-spec.md`](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-00-measurement-spec.md)  
-**Status**: `IN PROGRESS`
+- Stage: STAGE 0 (Measurement & Data Contract)
+- Spec: [`plan/stages/stage-00-measurement-spec.md`](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-00-measurement-spec.md)
+- Status: `IN PROGRESS`
 
----
-
-## Agent Instructions:
-1. Load **ONLY** [`plan/stages/stage-00-measurement-spec.md`](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-00-measurement-spec.md).
-2. Do not load other stage documents in `plan/stages/`.
-3. Work through the unchecked checklist items `- [ ]` sequentially.
-4. Verify each item using the automated command specified before checking it `- [x]`.
-5. When all items in Stage 0 pass verification, notify the user/orchestrator before advancing to Stage 1.
+## Directive:
+1. Open ONLY spec above. Do not read other stages.
+2. Work 1 item `- [ ]` at a time. Run verify command.
+3. Check `- [x]` only on exit 0.
+4. Stage complete -> notify user -> advance pointer.
