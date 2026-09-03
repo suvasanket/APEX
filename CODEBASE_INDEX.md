@@ -18,7 +18,12 @@ APEX/
 ├── docs/               # Schemas & methodology specs
 ├── tests/              # Fixtures, unit, synthetic tests
 ├── AGENTS.md           # Agent operational protocol
-└── CODEBASE_INDEX.md   # This file
+├── CODEBASE_INDEX.md   # This file
+└── Makefile            # Command runner & test verification targets
+```
+
+## 2. PACKAGE REGISTRY
+- `apex.models`: Domain schemas & validation (`fare.py`, `route.py`).
 ```
 
 ## 2. PACKAGE REGISTRY
@@ -36,6 +41,13 @@ APEX/
 - `FareObservation`: Canonical immutable observation (flight identity, fare breakdown, raw hash, status).
 - `FlightIdentity`: Airline, flight number, origin, destination, departure time, stops.
 - `FareBreakdown`: Currency (INR), base fare, taxes, fees, total payable fare.
+
+### Collectors (`apex.collectors`)
+- `BaseCollector`: Abstract scraper class (`collect_route(origin, dest, date, window) -> CollectorResult`).
+- `CollectorResult`: Container (`observations`, `raw_payload`, `raw_hash`, `meta`).
+- `CircuitBreaker`: Failure/rate-limit circuit breaker decorator.
+
+### Storage (`apex.storage`)
 
 ### Collectors (`apex.collectors`)
 - `BaseCollector`: Abstract scraper class (`collect_route(origin, dest, date, window) -> CollectorResult`).

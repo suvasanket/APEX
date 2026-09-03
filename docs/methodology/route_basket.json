@@ -1,0 +1,52 @@
+[
+  {
+    "route_id": "DEL-BOM",
+    "origin_iata": "DEL",
+    "origin_city": "Delhi",
+    "destination_iata": "BOM",
+    "destination_city": "Mumbai",
+    "direction": "one_way",
+    "weight": 0.35,
+    "description": "Metro-to-Metro premier commercial corridor"
+  },
+  {
+    "route_id": "DEL-BLR",
+    "origin_iata": "DEL",
+    "origin_city": "Delhi",
+    "destination_iata": "BLR",
+    "destination_city": "Bengaluru",
+    "direction": "one_way",
+    "weight": 0.25,
+    "description": "Metro-to-Tech hub corridor"
+  },
+  {
+    "route_id": "BOM-BLR",
+    "origin_iata": "BOM",
+    "origin_city": "Mumbai",
+    "destination_iata": "BLR",
+    "destination_city": "Bengaluru",
+    "direction": "one_way",
+    "weight": 0.20,
+    "description": "Financial-to-Tech hub corridor"
+  },
+  {
+    "route_id": "DEL-CCU",
+    "origin_iata": "DEL",
+    "origin_city": "Delhi",
+    "destination_iata": "CCU",
+    "destination_city": "Kolkata",
+    "direction": "one_way",
+    "weight": 0.12,
+    "description": "North-to-East regional trunk route"
+  },
+  {
+    "route_id": "BLR-HYD",
+    "origin_iata": "BLR",
+    "origin_city": "Bengaluru",
+    "destination_iata": "HYD",
+    "destination_city": "Hyderabad",
+    "direction": "one_way",
+    "weight": 0.08,
+    "description": "Southern interstate short-haul trunk route"
+  }
+]

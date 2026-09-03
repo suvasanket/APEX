@@ -7,6 +7,10 @@
 
 ## 2. CHECKLIST & VERIFICATION
 - Work atomic: 1 item `- [ ]` at a time.
+- Commands: ALWAYS prefer `make` targets (`make test`, `make verify-stage-X`, `make clean`).
+- Run verify command. Exit code 0 REQUIRED before marking `- [x]`.
+- Stage gate: All items `- [x]` + full test suite exit 0 -> notify user -> advance `plan/CURRENT_STAGE.md`.
+
 - Run verify command. Exit code 0 REQUIRED before marking `- [x]`.
 - Stage gate: All items `- [x]` + full test suite exit 0 -> notify user -> advance `plan/CURRENT_STAGE.md`.
 
@@ -19,8 +23,15 @@
 - Safety: Rate limits, backoff, circuit breaker.
 
 ## 4. ENVIRONMENT (ZERO UNAPPROVED INSTALLS)
-- NO `pip install`, NO `brew install` unless user explicitly commands.
-- Stack: Python 3.11+, local PostgreSQL, Playwright async, FastAPI, Pydantic v2.
+- Tooling: `make` drives all testing and execution via `.venv/bin/python`.
+
+## 5. CODEBASE INDEX PROTOCOL (`CODEBASE_INDEX.md`)
+- Scope: Codebase structure ONLY (files, symbols, tables, fixtures). ZERO plan/roadmap data.
+- READ: Before writing code -> check existing classes/helpers. Prevent duplication.
+- WRITE: Auto-update on new module, public class/function, DB model, or fixture.
+- DO NOT WRITE: Internal logic edits, bug fixes, comments. Max 1 line per entry.
+
+## 6. TURN EXECUTION LOOP
 
 ## 5. CODEBASE INDEX PROTOCOL (`CODEBASE_INDEX.md`)
 - Scope: Codebase structure ONLY (files, symbols, tables, fixtures). ZERO plan/roadmap data.
@@ -34,5 +45,3 @@
 3. Check `CODEBASE_INDEX.md` for existing symbols.
 4. Implement 1 item `- [ ]`.
 5. Update `CODEBASE_INDEX.md` if new file/symbol added.
-6. Run verify command. Exit 0 -> mark `- [x]`.
-7. Repeat or report stage gate.

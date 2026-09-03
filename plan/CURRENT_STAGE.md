@@ -1,7 +1,7 @@
-# ACTIVE STAGE: STAGE 0
+# ACTIVE STAGE: STAGE 1
 
-- Stage: STAGE 0 (Measurement & Data Contract)
-- Spec: [`plan/stages/stage-00-measurement-spec.md`](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-00-measurement-spec.md)
+- Stage: STAGE 1 (Data Acquisition Engine)
+- Spec: [`plan/stages/stage-01-data-acquisition.md`](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-01-data-acquisition.md)
 - Status: `IN PROGRESS`
 
 ## Directive:

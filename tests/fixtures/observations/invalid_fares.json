@@ -1,0 +1,289 @@
+[
+  {
+    "description": "Negative base fare",
+    "expected_error": "base_fare",
+    "payload": {
+      "observation_id": "err-negative-base-001",
+      "collection_timestamp": "2026-09-03T10:00:00Z",
+      "source_info": {
+        "source_code": "indigo_direct",
+        "source_type": "airline_direct",
+        "collection_run_id": "run-001"
+      },
+      "flight_identity": {
+        "airline_iata": "6E",
+        "flight_number": "6E-2054",
+        "origin_iata": "DEL",
+        "destination_iata": "BOM",
+        "departure_datetime": "2026-09-18T06:00:00Z",
+        "arrival_datetime": "2026-09-18T08:15:00Z",
+        "stops": 0,
+        "is_nonstop": true
+      },
+      "booking_dimension": {
+        "booking_window": "T+15",
+        "advance_days": 15,
+        "cabin_class": "economy",
+        "fare_family": "Saver"
+      },
+      "fare_breakdown": {
+        "currency": "INR",
+        "base_fare": -100.0,
+        "taxes": 50.0,
+        "fees": 50.0,
+        "total_payable_fare": 0.0
+      },
+      "raw_audit": {
+        "raw_payload": "raw",
+        "raw_hash": "a883dafc537725856783087b3f9f60b8039c3313a66a382a3e5e6347fb5fa58b"
+      },
+      "status": "AVAILABLE"
+    }
+  },
+  {
+    "description": "Wrong currency code USD instead of INR",
+    "expected_error": "currency",
+    "payload": {
+      "observation_id": "err-wrong-currency-002",
+      "collection_timestamp": "2026-09-03T10:00:00Z",
+      "source_info": {
+        "source_code": "indigo_direct",
+        "source_type": "airline_direct",
+        "collection_run_id": "run-001"
+      },
+      "flight_identity": {
+        "airline_iata": "6E",
+        "flight_number": "6E-2054",
+        "origin_iata": "DEL",
+        "destination_iata": "BOM",
+        "departure_datetime": "2026-09-18T06:00:00Z",
+        "arrival_datetime": "2026-09-18T08:15:00Z",
+        "stops": 0,
+        "is_nonstop": true
+      },
+      "booking_dimension": {
+        "booking_window": "T+15",
+        "advance_days": 15,
+        "cabin_class": "economy",
+        "fare_family": "Saver"
+      },
+      "fare_breakdown": {
+        "currency": "USD",
+        "base_fare": 1000.0,
+        "taxes": 200.0,
+        "fees": 50.0,
+        "total_payable_fare": 1250.0
+      },
+      "raw_audit": {
+        "raw_payload": "raw",
+        "raw_hash": "a883dafc537725856783087b3f9f60b8039c3313a66a382a3e5e6347fb5fa58b"
+      },
+      "status": "AVAILABLE"
+    }
+  },
+  {
+    "description": "Total payable fare does not equal base + taxes + fees",
+    "expected_error": "total_payable_fare",
+    "payload": {
+      "observation_id": "err-mismatch-total-003",
+      "collection_timestamp": "2026-09-03T10:00:00Z",
+      "source_info": {
+        "source_code": "indigo_direct",
+        "source_type": "airline_direct",
+        "collection_run_id": "run-001"
+      },
+      "flight_identity": {
+        "airline_iata": "6E",
+        "flight_number": "6E-2054",
+        "origin_iata": "DEL",
+        "destination_iata": "BOM",
+        "departure_datetime": "2026-09-18T06:00:00Z",
+        "arrival_datetime": "2026-09-18T08:15:00Z",
+        "stops": 0,
+        "is_nonstop": true
+      },
+      "booking_dimension": {
+        "booking_window": "T+15",
+        "advance_days": 15,
+        "cabin_class": "economy",
+        "fare_family": "Saver"
+      },
+      "fare_breakdown": {
+        "currency": "INR",
+        "base_fare": 1000.0,
+        "taxes": 200.0,
+        "fees": 50.0,
+        "total_payable_fare": 9999.0
+      },
+      "raw_audit": {
+        "raw_payload": "raw",
+        "raw_hash": "a883dafc537725856783087b3f9f60b8039c3313a66a382a3e5e6347fb5fa58b"
+      },
+      "status": "AVAILABLE"
+    }
+  },
+  {
+    "description": "Departure datetime after arrival datetime",
+    "expected_error": "departure_datetime",
+    "payload": {
+      "observation_id": "err-dep-after-arr-004",
+      "collection_timestamp": "2026-09-03T10:00:00Z",
+      "source_info": {
+        "source_code": "indigo_direct",
+        "source_type": "airline_direct",
+        "collection_run_id": "run-001"
+      },
+      "flight_identity": {
+        "airline_iata": "6E",
+        "flight_number": "6E-2054",
+        "origin_iata": "DEL",
+        "destination_iata": "BOM",
+        "departure_datetime": "2026-09-18T10:00:00Z",
+        "arrival_datetime": "2026-09-18T08:00:00Z",
+        "stops": 0,
+        "is_nonstop": true
+      },
+      "booking_dimension": {
+        "booking_window": "T+15",
+        "advance_days": 15,
+        "cabin_class": "economy",
+        "fare_family": "Saver"
+      },
+      "fare_breakdown": {
+        "currency": "INR",
+        "base_fare": 3800.0,
+        "taxes": 450.0,
+        "fees": 282.0,
+        "total_payable_fare": 4532.0
+      },
+      "raw_audit": {
+        "raw_payload": "raw",
+        "raw_hash": "a883dafc537725856783087b3f9f60b8039c3313a66a382a3e5e6347fb5fa58b"
+      },
+      "status": "AVAILABLE"
+    }
+  },
+  {
+    "description": "Identical origin and destination airport code",
+    "expected_error": "destination_iata",
+    "payload": {
+      "observation_id": "err-same-origin-dest-005",
+      "collection_timestamp": "2026-09-03T10:00:00Z",
+      "source_info": {
+        "source_code": "indigo_direct",
+        "source_type": "airline_direct",
+        "collection_run_id": "run-001"
+      },
+      "flight_identity": {
+        "airline_iata": "6E",
+        "flight_number": "6E-2054",
+        "origin_iata": "DEL",
+        "destination_iata": "DEL",
+        "departure_datetime": "2026-09-18T06:00:00Z",
+        "arrival_datetime": "2026-09-18T08:15:00Z",
+        "stops": 0,
+        "is_nonstop": true
+      },
+      "booking_dimension": {
+        "booking_window": "T+15",
+        "advance_days": 15,
+        "cabin_class": "economy",
+        "fare_family": "Saver"
+      },
+      "fare_breakdown": {
+        "currency": "INR",
+        "base_fare": 3800.0,
+        "taxes": 450.0,
+        "fees": 282.0,
+        "total_payable_fare": 4532.0
+      },
+      "raw_audit": {
+        "raw_payload": "raw",
+        "raw_hash": "a883dafc537725856783087b3f9f60b8039c3313a66a382a3e5e6347fb5fa58b"
+      },
+      "status": "AVAILABLE"
+    }
+  },
+  {
+    "description": "Non-economy cabin class",
+    "expected_error": "cabin_class",
+    "payload": {
+      "observation_id": "err-business-cabin-006",
+      "collection_timestamp": "2026-09-03T10:00:00Z",
+      "source_info": {
+        "source_code": "indigo_direct",
+        "source_type": "airline_direct",
+        "collection_run_id": "run-001"
+      },
+      "flight_identity": {
+        "airline_iata": "6E",
+        "flight_number": "6E-2054",
+        "origin_iata": "DEL",
+        "destination_iata": "BOM",
+        "departure_datetime": "2026-09-18T06:00:00Z",
+        "arrival_datetime": "2026-09-18T08:15:00Z",
+        "stops": 0,
+        "is_nonstop": true
+      },
+      "booking_dimension": {
+        "booking_window": "T+15",
+        "advance_days": 15,
+        "cabin_class": "business",
+        "fare_family": "Flexi"
+      },
+      "fare_breakdown": {
+        "currency": "INR",
+        "base_fare": 3800.0,
+        "taxes": 450.0,
+        "fees": 282.0,
+        "total_payable_fare": 4532.0
+      },
+      "raw_audit": {
+        "raw_payload": "raw",
+        "raw_hash": "a883dafc537725856783087b3f9f60b8039c3313a66a382a3e5e6347fb5fa58b"
+      },
+      "status": "AVAILABLE"
+    }
+  },
+  {
+    "description": "Raw hash mismatch with SHA-256 of payload",
+    "expected_error": "raw_hash",
+    "payload": {
+      "observation_id": "err-hash-mismatch-007",
+      "collection_timestamp": "2026-09-03T10:00:00Z",
+      "source_info": {
+        "source_code": "indigo_direct",
+        "source_type": "airline_direct",
+        "collection_run_id": "run-001"
+      },
+      "flight_identity": {
+        "airline_iata": "6E",
+        "flight_number": "6E-2054",
+        "origin_iata": "DEL",
+        "destination_iata": "BOM",
+        "departure_datetime": "2026-09-18T06:00:00Z",
+        "arrival_datetime": "2026-09-18T08:15:00Z",
+        "stops": 0,
+        "is_nonstop": true
+      },
+      "booking_dimension": {
+        "booking_window": "T+15",
+        "advance_days": 15,
+        "cabin_class": "economy",
+        "fare_family": "Saver"
+      },
+      "fare_breakdown": {
+        "currency": "INR",
+        "base_fare": 3800.0,
+        "taxes": 450.0,
+        "fees": 282.0,
+        "total_payable_fare": 4532.0
+      },
+      "raw_audit": {
+        "raw_payload": "raw",
+        "raw_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "status": "AVAILABLE"
+    }
+  }
+]

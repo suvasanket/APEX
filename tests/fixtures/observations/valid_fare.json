@@ -1,0 +1,37 @@
+{
+  "observation_id": "obs-6e-2054-del-bom-20260903-t15",
+  "collection_timestamp": "2026-09-03T10:00:00Z",
+  "source_info": {
+    "source_code": "indigo_direct",
+    "source_type": "airline_direct",
+    "collection_run_id": "run-del-bom-20260903-100000"
+  },
+  "flight_identity": {
+    "airline_iata": "6E",
+    "flight_number": "6E-2054",
+    "origin_iata": "DEL",
+    "destination_iata": "BOM",
+    "departure_datetime": "2026-09-18T06:00:00Z",
+    "arrival_datetime": "2026-09-18T08:15:00Z",
+    "stops": 0,
+    "is_nonstop": true
+  },
+  "booking_dimension": {
+    "booking_window": "T+15",
+    "advance_days": 15,
+    "cabin_class": "economy",
+    "fare_family": "Saver"
+  },
+  "fare_breakdown": {
+    "currency": "INR",
+    "base_fare": 3800.0,
+    "taxes": 450.0,
+    "fees": 282.0,
+    "total_payable_fare": 4532.0
+  },
+  "raw_audit": {
+    "raw_payload": "{\"airline\":\"6E\",\"flight\":\"6E-2054\",\"origin\":\"DEL\",\"destination\":\"BOM\",\"base\":3800,\"tax\":450,\"fee\":282,\"total\":4532}",
+    "raw_hash": "8859d3e3c34fe87773cb451141ef1b90535010ee2e20485d856a8a44fb9770b5"
+  },
+  "status": "AVAILABLE"
+}
