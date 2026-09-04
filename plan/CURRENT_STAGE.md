@@ -5,7 +5,8 @@
 - Status: `ACTIVE`
 
 ## Directive:
-1. Open ONLY spec above. Do not read other stages.
-2. Work 1 item `- [ ]` at a time. Run verify command.
-3. Check `- [x]` only on exit 0.
-4. Stage complete -> notify user -> advance pointer.
+1. Open ONLY spec above for stage tasks.
+2. Retroactive edits to previous stages permitted at any time.
+3. Work 1 item `- [ ]` at a time. Run `make` verify command.
+4. Check `- [x]` only on exit 0.
+5. Stage complete -> notify user -> await explicit user instruction before advancing stage.
