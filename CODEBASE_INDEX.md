@@ -46,13 +46,12 @@ APEX/
 - `BaseCollector`: Abstract scraper class (`collect_route(origin, dest, date, window) -> CollectorResult`).
 - `CollectorResult`: Container (`observations`, `raw_payload`, `raw_hash`, `meta`).
 - `CircuitBreaker`: Failure/rate-limit circuit breaker decorator.
-
-### Storage (`apex.storage`)
-
-### Collectors (`apex.collectors`)
-- `BaseCollector`: Abstract scraper class (`collect_route(origin, dest, date, window) -> CollectorResult`).
-- `CollectorResult`: Container (`observations`, `raw_payload`, `raw_hash`, `meta`).
-- `CircuitBreaker`: Failure/rate-limit circuit breaker decorator.
+- `CircuitBreakerOpenException`: Exception raised when circuit breaker is in OPEN state.
+- `MockCollector`: Offline-first collector emitting synthetic FareObservation fixtures.
+- `IndiGoCollector`: Direct carrier scraper and adapter for IndiGo flights.
+- `IndiGoResponseParser`: Parser transforming raw IndiGo search payloads into canonical observations.
+- `compute_raw_hash`: Computes deterministic SHA-256 hex digest for scraper payload.
+- `InMemoryRawPayloadStore`: Key-value store for raw payloads indexed by SHA-256.
 
 ### Storage (`apex.storage`)
 - `FareObservationRecord`: ORM model for `fare_observations` table.
@@ -82,5 +81,6 @@ APEX/
 ## 4. TEST FIXTURE REGISTRY
 - `tests/fixtures/observations/valid_fare.json`: Valid IndiGo DEL-BOM sample.
 - `tests/fixtures/observations/invalid_fares.json`: Malformed fares (negative, wrong currency).
+- `tests/fixtures/observations/indigo_response_sample.json`: Multi-flight sample IndiGo search response.
 - `tests/fixtures/dgca_30day.json`: 30-day historical DGCA route benchmark data.
 - `tests/fixtures/synthetic_shocks.json`: Synthetic price shocks for mathematical invariant tests.

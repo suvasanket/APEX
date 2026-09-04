@@ -1,8 +1,8 @@
-# ACTIVE STAGE: STAGE 1
+# ACTIVE STAGE: STAGE 2
 
-- Stage: STAGE 1 (Data Acquisition Engine)
-- Spec: [`plan/stages/stage-01-data-acquisition.md`](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-01-data-acquisition.md)
-- Status: `IN PROGRESS`
+- Stage: STAGE 2 (Cleaning, Normalization & Storage)
+- Spec: [`plan/stages/stage-02-cleaning-storage.md`](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-02-cleaning-storage.md)
+- Status: `ACTIVE`
 
 ## Directive:
 1. Open ONLY spec above. Do not read other stages.

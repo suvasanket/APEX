@@ -1,0 +1,87 @@
+{
+  "status": "success",
+  "data": {
+    "origin": "DEL",
+    "destination": "BOM",
+    "searchDate": "2026-09-04T10:00:00Z",
+    "journeys": [
+      {
+        "origin": "DEL",
+        "destination": "BOM",
+        "departureDate": "2026-09-19",
+        "flights": [
+          {
+            "flightNumber": "6E-2054",
+            "carrierCode": "6E",
+            "departureTime": "2026-09-19T06:00:00Z",
+            "arrivalTime": "2026-09-19T08:15:00Z",
+            "stops": 0,
+            "isNonStop": true,
+            "fares": [
+              {
+                "fareFamily": "Saver",
+                "cabinClass": "economy",
+                "baseFare": 3800.0,
+                "taxes": 450.0,
+                "fees": 282.0,
+                "totalFare": 4532.0,
+                "currency": "INR",
+                "availableSeats": 7
+              },
+              {
+                "fareFamily": "FlexiPlus",
+                "cabinClass": "economy",
+                "baseFare": 4500.0,
+                "taxes": 510.0,
+                "fees": 282.0,
+                "totalFare": 5292.0,
+                "currency": "INR",
+                "availableSeats": 4
+              }
+            ]
+          },
+          {
+            "flightNumber": "6E-5128",
+            "carrierCode": "6E",
+            "departureTime": "2026-09-19T10:30:00Z",
+            "arrivalTime": "2026-09-19T12:45:00Z",
+            "stops": 0,
+            "isNonStop": true,
+            "fares": [
+              {
+                "fareFamily": "Saver",
+                "cabinClass": "economy",
+                "baseFare": 4200.0,
+                "taxes": 490.0,
+                "fees": 282.0,
+                "totalFare": 4972.0,
+                "currency": "INR",
+                "availableSeats": 3
+              }
+            ]
+          },
+          {
+            "flightNumber": "6E-301",
+            "carrierCode": "6E",
+            "departureTime": "2026-09-19T14:00:00Z",
+            "arrivalTime": "2026-09-19T18:30:00Z",
+            "stops": 1,
+            "isNonStop": false,
+            "fares": [
+              {
+                "fareFamily": "Saver",
+                "cabinClass": "economy",
+                "baseFare": 3500.0,
+                "taxes": 400.0,
+                "fees": 250.0,
+                "totalFare": 4150.0,
+                "currency": "INR",
+                "availableSeats": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 # Stage 1: Data Acquisition Engine
 
-> **Stage Status**: `ACTIVE`  
+> **Stage Status**: `COMPLETED`  
 > **Prerequisites**: [Stage 0: Measurement & Data Contract](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-00-measurement-spec.md) is complete.  
 > **Next Stage**: [Stage 2: Cleaning, Normalization & Storage](file:///Users/suvasanketrout/Developer/APEX/plan/stages/stage-02-cleaning-storage.md)
 
@@ -60,19 +60,19 @@ Each collector must adhere to configurable safety profiles:
 
 ## 3. Stage 1 Verification Checklist
 
-- [ ] **Task 1.1: Base Collector Interface & Data Types**
+- [x] **Task 1.1: Base Collector Interface & Data Types**
   - Implement `apex/collectors/base.py` with `BaseCollector`, `CollectorResult`, and retry/circuit-breaker decorators.
   - *Verification command*: `make test-unit` (or `.venv/bin/python -m unittest tests/unit/test_collector_base.py`)
-- [ ] **Task 1.2: Mock / Fixture Collector for Offline Pipeline Testing**
+- [x] **Task 1.2: Mock / Fixture Collector for Offline Pipeline Testing**
   - Implement `apex/collectors/mock.py` that emits synthetic `FareObservation` objects from static recorded fixtures. Enables 100% offline verification of the pipeline.
   - *Verification command*: `make test-unit` (or `.venv/bin/python -m unittest tests/unit/test_mock_collector.py`)
-- [ ] **Task 1.3: IndiGo Playwright Network Interceptor Adapter**
+- [x] **Task 1.3: IndiGo Playwright Network Interceptor Adapter**
   - Implement `apex/collectors/indigo.py`. Intercepts flight search API responses, extracts fare families, flight numbers, base fare, taxes, and fees.
   - *Verification command*: `make test-unit` (or `.venv/bin/python -m unittest tests/unit/test_indigo_parser.py`)
-- [ ] **Task 1.4: Raw Payload Storage & Hashing**
+- [x] **Task 1.4: Raw Payload Storage & Hashing**
   - Implement payload hashing utility (`apex/collectors/audit.py`) computing SHA-256 digests on raw response strings.
   - *Verification command*: `make test-unit` (or `.venv/bin/python -m unittest tests/unit/test_raw_audit.py`)
-- [ ] **Task 1.5: End-to-End Live Single Route Spike**
+- [x] **Task 1.5: End-to-End Live Single Route Spike**
   - Execute 1 live collection run on DEL → BOM at T+15 using IndiGo collector, producing valid JSON output.
   - *Verification command*: `make verify-stage-1`
 

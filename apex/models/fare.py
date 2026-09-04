@@ -210,6 +210,12 @@ class FareBreakdown(ImmutableBase):
 class RawAudit(ImmutableBase):
     """Provenance audit trail preserving raw scraper response and cryptographic hash."""
 
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid",
+        str_strip_whitespace=False,
+    )
+
     raw_payload: str = Field(
         ...,
         description="Exact raw unmutated payload snippet from collection source",
