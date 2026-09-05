@@ -72,15 +72,25 @@ Each collector must adhere to configurable safety profiles:
 - [x] **Task 1.4: Raw Payload Storage & Hashing**
   - Implement payload hashing utility (`apex/collectors/audit.py`) computing SHA-256 digests on raw response strings.
   - *Verification command*: `make test-unit` (or `.venv/bin/python -m unittest tests/unit/test_raw_audit.py`)
-- [x] **Task 1.5: End-to-End Live Single Route Spike**
-  - Execute 1 live collection run on DEL → BOM at T+15 using IndiGo collector, producing valid JSON output.
+- [x] **Task 1.5: Route Basket Matrix Orchestrator**
+  - Implement `apex/collectors/orchestrator.py` loading `docs/methodology/route_basket.json` and `booking_windows.json` to manage execution across the 5 standard domestic routes.
+  - *Verification command*: `.venv/bin/python -m unittest tests/unit/test_orchestrator.py`
+- [x] **Task 1.6: Real Playwright Browser Ingestion**
+  - Implement `apex/collectors/playwright_scraper.py` using Chromium network interception to capture real-world live flight search payloads from `goindigo.in`.
+  - *Verification command*: `make test-unit`
+- [x] **Task 1.7: Live Acquisition Preview & Viewer Setup**
+  - Implement `apex/collectors/preview.py` with Terminal TUI (`make preview-live`) and Web Dashboard (`make preview-dashboard`) to demonstrate real-time acquisition.
+  - *Verification command*: `make preview-live` / `make preview-dashboard`
+- [x] **Task 1.8: Live Basket Verification Spike & Cross-Verification Audit Report**
+  - Execute live acquisition across the route basket, export `data/live_verification_*.txt` comparison reports, and cross-verify with live site.
   - *Verification command*: `make verify-stage-1`
-
 
 ---
 
 ## 4. Exit Criteria for Stage 1
 
 1. All checklist items marked `[x]`.
-2. IndiGo collector reliably extracts structured `FareObservation` records matching the Stage 0 schema.
-3. Raw JSON response and SHA-256 hash are recorded for every observation.
+2. Scraper driven automatically by the canonical route basket (`route_basket.json`).
+3. Real Playwright acquisition succeeds with raw JSON payload and SHA-256 hash recorded.
+4. Live viewer demonstrates real-time data acquisition with side-by-side verification instructions.
+

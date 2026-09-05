@@ -52,6 +52,10 @@ APEX/
 - `IndiGoResponseParser`: Parser transforming raw IndiGo search payloads into canonical observations.
 - `compute_raw_hash`: Computes deterministic SHA-256 hex digest for scraper payload.
 - `InMemoryRawPayloadStore`: Key-value store for raw payloads indexed by SHA-256.
+- `RouteBasketOrchestrator`: Coordinates collection runs across the 5x5 route-window methodology matrix.
+- `PlaywrightIndiGoCollector`: Live browser scraper using Chromium network interception on goindigo.in.
+- `format_observation_table`: Formats acquired observations into human-readable verification reports.
+- `run_web_dashboard`: Serves interactive local browser dashboard for visual live preview.
 
 ### Storage (`apex.storage`)
 - `FareObservationRecord`: ORM model for `fare_observations` table.
