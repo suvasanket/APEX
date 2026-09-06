@@ -1,0 +1,60 @@
+{
+  "status": "success",
+  "data": {
+    "origin": "DEL",
+    "destination": "BOM",
+    "departureDate": "2026-09-20",
+    "flights": [
+      {
+        "flightNumber": "QP-1101",
+        "carrierCode": "QP",
+        "departureTime": "2026-09-20T07:15:00Z",
+        "arrivalTime": "2026-09-20T09:30:00Z",
+        "stops": 0,
+        "isNonStop": true,
+        "fares": [
+          {
+            "fareFamily": "Saver",
+            "cabinClass": "economy",
+            "baseFare": 3900.0,
+            "taxes": 470.0,
+            "fees": 282.0,
+            "totalFare": 4652.0,
+            "currency": "INR",
+            "availableSeats": 6
+          },
+          {
+            "fareFamily": "Flexi",
+            "cabinClass": "economy",
+            "baseFare": 4600.0,
+            "taxes": 540.0,
+            "fees": 282.0,
+            "totalFare": 5422.0,
+            "currency": "INR",
+            "availableSeats": 3
+          }
+        ]
+      },
+      {
+        "flightNumber": "QP-1105",
+        "carrierCode": "QP",
+        "departureTime": "2026-09-20T19:00:00Z",
+        "arrivalTime": "2026-09-20T21:15:00Z",
+        "stops": 0,
+        "isNonStop": true,
+        "fares": [
+          {
+            "fareFamily": "Saver",
+            "cabinClass": "economy",
+            "baseFare": 4100.0,
+            "taxes": 490.0,
+            "fees": 282.0,
+            "totalFare": 4872.0,
+            "currency": "INR",
+            "availableSeats": 4
+          }
+        ]
+      }
+    ]
+  }
+}

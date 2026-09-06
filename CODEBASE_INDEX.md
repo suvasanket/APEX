@@ -24,11 +24,7 @@ APEX/
 
 ## 2. PACKAGE REGISTRY
 - `apex.models`: Domain schemas & validation (`fare.py`, `route.py`).
-```
-
-## 2. PACKAGE REGISTRY
-- `apex.models`: Domain schemas & validation (`fare.py`, `route.py`).
-- `apex.collectors`: Scrapers & adapters (`base.py`, `indigo.py`, `mock.py`).
+- `apex.collectors`: Scrapers & adapters (`base.py`, `indigo.py`, `mock.py`, `airindia.py`, `akasa.py`, `airindia_express.py`, `spicejet.py`, `registry.py`, `preview.py`).
 - `apex.normalization`: Ingestion cleaner & dedup (`service.py`, `dedup.py`).
 - `apex.storage`: DB access & ORM (`models.py`, `migrations.py`).
 - `apex.engine`: Statistical math & index formulas (`route_index.py`, `national_index.py`, `baseline.py`, `lead_time.py`).
@@ -54,6 +50,15 @@ APEX/
 - `InMemoryRawPayloadStore`: Key-value store for raw payloads indexed by SHA-256.
 - `RouteBasketOrchestrator`: Coordinates collection runs across the 5x5 route-window methodology matrix.
 - `PlaywrightIndiGoCollector`: Live browser scraper using Chromium network interception on goindigo.in.
+- `AirIndiaCollector`: Direct carrier scraper and adapter for Air India flights.
+- `AirIndiaResponseParser`: Parser transforming raw Air India search payloads into canonical observations.
+- `AirIndiaExpressCollector`: Direct carrier scraper for Air India Express flights.
+- `AirIndiaExpressResponseParser`: Parser transforming raw Air India Express search payloads into canonical observations.
+- `AkasaCollector`: Direct carrier scraper and adapter for Akasa Air flights.
+- `AkasaResponseParser`: Parser transforming raw Akasa search payloads into canonical observations.
+- `SpiceJetCollector`: Direct carrier scraper and adapter for SpiceJet flights.
+- `SpiceJetResponseParser`: Parser transforming raw SpiceJet search payloads into canonical observations.
+- `create_carrier_collector`: Factory resolving carrier code/name to appropriate collector instance.
 - `format_observation_table`: Formats acquired observations into human-readable verification reports.
 - `run_web_dashboard`: Serves interactive local browser dashboard for visual live preview.
 
@@ -86,5 +91,9 @@ APEX/
 - `tests/fixtures/observations/valid_fare.json`: Valid IndiGo DEL-BOM sample.
 - `tests/fixtures/observations/invalid_fares.json`: Malformed fares (negative, wrong currency).
 - `tests/fixtures/observations/indigo_response_sample.json`: Multi-flight sample IndiGo search response.
+- `tests/fixtures/observations/airindia_response_sample.json`: Multi-flight sample Air India search response.
+- `tests/fixtures/observations/airindia_express_response_sample.json`: Multi-flight sample Air India Express search response.
+- `tests/fixtures/observations/akasa_response_sample.json`: Multi-flight sample Akasa Air search response.
+- `tests/fixtures/observations/spicejet_response_sample.json`: Multi-flight sample SpiceJet search response.
 - `tests/fixtures/dgca_30day.json`: 30-day historical DGCA route benchmark data.
 - `tests/fixtures/synthetic_shocks.json`: Synthetic price shocks for mathematical invariant tests.

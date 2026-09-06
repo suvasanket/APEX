@@ -1,0 +1,60 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "origin": "DEL",
+    "destination": "BOM",
+    "departureDate": "2026-09-20",
+    "flights": [
+      {
+        "flightNumber": "IX-1422",
+        "carrierCode": "IX",
+        "departureTime": "2026-09-20T11:00:00Z",
+        "arrivalTime": "2026-09-20T13:15:00Z",
+        "stops": 0,
+        "isNonStop": true,
+        "fares": [
+          {
+            "fareFamily": "Xpress Lite",
+            "cabinClass": "economy",
+            "baseFare": 3600.0,
+            "taxes": 430.0,
+            "fees": 282.0,
+            "totalFare": 4312.0,
+            "currency": "INR",
+            "availableSeats": 7
+          },
+          {
+            "fareFamily": "Xpress Value",
+            "cabinClass": "economy",
+            "baseFare": 4000.0,
+            "taxes": 480.0,
+            "fees": 282.0,
+            "totalFare": 4762.0,
+            "currency": "INR",
+            "availableSeats": 5
+          }
+        ]
+      },
+      {
+        "flightNumber": "IX-1488",
+        "carrierCode": "IX",
+        "departureTime": "2026-09-20T17:30:00Z",
+        "arrivalTime": "2026-09-20T19:50:00Z",
+        "stops": 0,
+        "isNonStop": true,
+        "fares": [
+          {
+            "fareFamily": "Xpress Value",
+            "cabinClass": "economy",
+            "baseFare": 4200.0,
+            "taxes": 500.0,
+            "fees": 282.0,
+            "totalFare": 4982.0,
+            "currency": "INR",
+            "availableSeats": 4
+          }
+        ]
+      }
+    ]
+  }
+}

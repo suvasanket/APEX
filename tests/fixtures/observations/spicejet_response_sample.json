@@ -1,0 +1,50 @@
+{
+  "status": "success",
+  "data": {
+    "origin": "DEL",
+    "destination": "BOM",
+    "departureDate": "2026-09-20",
+    "flights": [
+      {
+        "flightNumber": "SG-8169",
+        "carrierCode": "SG",
+        "departureTime": "2026-09-20T06:30:00Z",
+        "arrivalTime": "2026-09-20T08:50:00Z",
+        "stops": 0,
+        "isNonStop": true,
+        "fares": [
+          {
+            "fareFamily": "Spicesaver",
+            "cabinClass": "economy",
+            "baseFare": 3750.0,
+            "taxes": 450.0,
+            "fees": 282.0,
+            "totalFare": 4482.0,
+            "currency": "INR",
+            "availableSeats": 8
+          }
+        ]
+      },
+      {
+        "flightNumber": "SG-8709",
+        "carrierCode": "SG",
+        "departureTime": "2026-09-20T16:15:00Z",
+        "arrivalTime": "2026-09-20T18:35:00Z",
+        "stops": 0,
+        "isNonStop": true,
+        "fares": [
+          {
+            "fareFamily": "Spicesaver",
+            "cabinClass": "economy",
+            "baseFare": 4050.0,
+            "taxes": 485.0,
+            "fees": 282.0,
+            "totalFare": 4817.0,
+            "currency": "INR",
+            "availableSeats": 5
+          }
+        ]
+      }
+    ]
+  }
+}

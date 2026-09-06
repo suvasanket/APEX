@@ -1,0 +1,80 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "origin": "DEL",
+    "destination": "BOM",
+    "departureDate": "2026-09-20",
+    "flights": [
+      {
+        "flightNumber": "AI-805",
+        "carrierCode": "AI",
+        "departureTime": "2026-09-20T08:00:00Z",
+        "arrivalTime": "2026-09-20T10:15:00Z",
+        "stops": 0,
+        "isNonStop": true,
+        "fares": [
+          {
+            "fareFamily": "Eco Value",
+            "cabinClass": "economy",
+            "baseFare": 4200.0,
+            "taxes": 520.0,
+            "fees": 282.0,
+            "totalFare": 5002.0,
+            "currency": "INR",
+            "availableSeats": 5
+          },
+          {
+            "fareFamily": "Eco Flex",
+            "cabinClass": "economy",
+            "baseFare": 5100.0,
+            "taxes": 610.0,
+            "fees": 282.0,
+            "totalFare": 5992.0,
+            "currency": "INR",
+            "availableSeats": 9
+          }
+        ]
+      },
+      {
+        "flightNumber": "AI-887",
+        "carrierCode": "AI",
+        "departureTime": "2026-09-20T14:30:00Z",
+        "arrivalTime": "2026-09-20T16:50:00Z",
+        "stops": 0,
+        "isNonStop": true,
+        "fares": [
+          {
+            "fareFamily": "Eco Value",
+            "cabinClass": "economy",
+            "baseFare": 4500.0,
+            "taxes": 550.0,
+            "fees": 282.0,
+            "totalFare": 5332.0,
+            "currency": "INR",
+            "availableSeats": 4
+          }
+        ]
+      },
+      {
+        "flightNumber": "AI-441",
+        "carrierCode": "AI",
+        "departureTime": "2026-09-20T18:00:00Z",
+        "arrivalTime": "2026-09-20T22:30:00Z",
+        "stops": 1,
+        "isNonStop": false,
+        "fares": [
+          {
+            "fareFamily": "Eco Value",
+            "cabinClass": "economy",
+            "baseFare": 3900.0,
+            "taxes": 480.0,
+            "fees": 282.0,
+            "totalFare": 4662.0,
+            "currency": "INR",
+            "availableSeats": 2
+          }
+        ]
+      }
+    ]
+  }
+}

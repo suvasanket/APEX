@@ -1,4 +1,4 @@
-"""Live Acquisition Previewer & Verification Viewer for APEX."""
+"""Live Acquisition Previewer & Verification Viewer for Multi-Carrier Domestic APEX Engine."""
 
 import argparse
 import asyncio
@@ -14,6 +14,14 @@ import urllib.parse
 from apex.collectors.mock import MockCollector
 from apex.collectors.orchestrator import RouteBasketOrchestrator
 from apex.collectors.playwright_scraper import PlaywrightIndiGoCollector
+from apex.collectors.registry import (
+    DOMESTIC_CARRIERS,
+    create_carrier_collector,
+    get_all_carrier_collectors,
+    get_carrier_metadata,
+    get_supported_carriers,
+    resolve_carrier_code,
+)
 from apex.models.fare import FareObservation
 
 logger = logging.getLogger(__name__)
@@ -28,16 +36,17 @@ def format_observation_table(
     observations: list[FareObservation],
     raw_hash: str,
     source_name: str,
+    carrier_hint: Optional[str] = None,
 ) -> str:
     """Format acquired observations into a human-readable verification report."""
     lines = []
-    bar = "=" * 88
-    sub_bar = "-" * 88
+    bar = "=" * 98
+    sub_bar = "-" * 98
 
     lines.append(bar)
-    lines.append("  APEX REAL-TIME DATA ACQUISITION VERIFICATION AUDIT")
+    lines.append("  APEX REAL-TIME MULTI-CARRIER DATA ACQUISITION VERIFICATION AUDIT")
     lines.append(bar)
-    lines.append(f"  Source Provider:     {source_name}")
+    lines.append(f"  Source Provider(s):  {source_name}")
     lines.append(f"  Route:               {route_id}")
     lines.append(f"  Booking Window:      {window_id} (Target Date: {travel_date.isoformat()})")
     lines.append(f"  Timestamp (UTC):     {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
@@ -49,7 +58,7 @@ def format_observation_table(
         lines.append("  [!] No flights captured for this route/date.")
     else:
         # Table Header
-        header = f"  {'Flight':<10} | {'Departure (UTC)':<16} | {'Arrival (UTC)':<16} | {'Tier':<8} | {'Base (₹)':>10} | {'Tax (₹)':>8} | {'Fee (₹)':>8} | {'Total (₹)':>10}"
+        header = f"  {'Airline':<8} | {'Flight':<10} | {'Dep (UTC)':<11} | {'Arr (UTC)':<11} | {'Tier':<10} | {'Base (₹)':>10} | {'Tax (₹)':>8} | {'Fee (₹)':>8} | {'Total (₹)':>10}"
         lines.append(header)
         lines.append(sub_bar)
 
@@ -61,10 +70,11 @@ def format_observation_table(
             arr_str = fl.arrival_datetime.strftime("%m-%d %H:%M")
 
             row = (
-                f"  {fl.flight_number:<10} | "
-                f"{dep_str:<16} | "
-                f"{arr_str:<16} | "
-                f"{bd.fare_family:<8} | "
+                f"  {fl.airline_iata:<8} | "
+                f"{fl.flight_number:<10} | "
+                f"{dep_str:<11} | "
+                f"{arr_str:<11} | "
+                f"{bd.fare_family[:10]:<10} | "
                 f"{fb.base_fare:>10.2f} | "
                 f"{fb.taxes:>8.2f} | "
                 f"{fb.fees:>8.2f} | "
@@ -74,11 +84,16 @@ def format_observation_table(
 
     lines.append(sub_bar)
     lines.append("  VERIFICATION INSTRUCTIONS:")
-    lines.append("  1. Open https://www.goindigo.in in your web browser.")
     origin = route_id.split("-")[0] if "-" in route_id else "DEL"
     dest = route_id.split("-")[1] if "-" in route_id else "BOM"
+
+    portal_url = "https://www.goindigo.in"
+    if carrier_hint and carrier_hint.upper() in DOMESTIC_CARRIERS:
+        portal_url = DOMESTIC_CARRIERS[carrier_hint.upper()].portal_url
+
+    lines.append(f"  1. Open direct carrier portal: {portal_url}")
     lines.append(f"  2. Search One-Way from '{origin}' to '{dest}' for departure date '{travel_date.strftime('%d %b %Y')}'.")
-    lines.append("  3. Compare the Saver fare, taxes, and total payable amount with the table above.")
+    lines.append("  3. Compare the Saver / Economy fare breakdown with the table above.")
     lines.append("  4. Verify that total_payable_fare equals base_fare + taxes + fees.")
     lines.append(bar)
 
@@ -93,11 +108,13 @@ def export_verification_artifacts(
     raw_payload: str,
     raw_hash: str,
     source_name: str,
+    carrier_hint: Optional[str] = None,
     output_dir: Path = DEFAULT_DATA_DIR,
 ) -> tuple[Path, Path]:
     """Save both human-readable text report and raw JSON payload to disk."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    slug = f"{route_id.lower()}_{window_id.lower().replace('+', '')}_{travel_date.strftime('%Y%m%d')}"
+    carrier_slug = f"{carrier_hint.lower()}_" if carrier_hint else ""
+    slug = f"{carrier_slug}{route_id.lower()}_{window_id.lower().replace('+', '')}_{travel_date.strftime('%Y%m%d')}"
 
     txt_file = output_dir / f"live_preview_{slug}.txt"
     json_file = output_dir / f"live_preview_{slug}_raw.json"
@@ -109,6 +126,7 @@ def export_verification_artifacts(
         observations=observations,
         raw_hash=raw_hash,
         source_name=source_name,
+        carrier_hint=carrier_hint,
     )
     with open(txt_file, "w", encoding="utf-8") as f:
         f.write(formatted_text)
@@ -120,8 +138,9 @@ def export_verification_artifacts(
 
 
 def run_web_dashboard(port: int = 8080):
-    """Launch a lightweight local HTTP dashboard for visual live preview."""
+    """Launch a lightweight local HTTP dashboard for multi-carrier live preview."""
     orchestrator = RouteBasketOrchestrator()
+    carriers = get_supported_carriers()
 
     class DashboardHandler(BaseHTTPRequestHandler):
         def do_GET(self):
@@ -139,12 +158,16 @@ def run_web_dashboard(port: int = 8080):
                     f'<option value="{w.window_id}">{w.window_id} - {w.name} (+{w.offset_days}d)</option>'
                     for w in orchestrator.windows
                 )
+                carriers_html = '<option value="ALL">All Direct Carriers (Consolidated Market)</option>' + "".join(
+                    f'<option value="{c.iata_code}">{c.name} ({c.iata_code}) &bull; {c.parent_group}</option>'
+                    for c in carriers
+                )
 
                 html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>APEX Live Data Acquisition Preview</title>
+    <title>APEX Multi-Carrier Live Preview</title>
     <style>
         body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; background: #0f172a; color: #f8fafc; }}
         header {{ background: #1e293b; padding: 20px 40px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }}
@@ -152,41 +175,51 @@ def run_web_dashboard(port: int = 8080):
         .badge {{ background: #0284c7; color: white; padding: 4px 10px; border-radius: 9999px; font-size: 12px; }}
         main {{ max-width: 1100px; margin: 40px auto; padding: 0 20px; }}
         .control-card {{ background: #1e293b; padding: 24px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 30px; }}
-        .form-row {{ display: flex; gap: 20px; margin-bottom: 20px; }}
+        .form-row {{ display: flex; gap: 16px; margin-bottom: 20px; }}
         .form-group {{ flex: 1; display: flex; flex-direction: column; }}
         label {{ font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #94a3b8; }}
         select, button {{ padding: 10px 14px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #f8fafc; font-size: 14px; }}
         button {{ background: #0284c7; border: none; cursor: pointer; font-weight: 600; padding: 12px 24px; }}
         button:hover {{ background: #0369a1; }}
         .results-table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
-        .results-table th, .results-table td {{ padding: 12px 16px; text-align: left; border-bottom: 1px solid #334155; font-size: 14px; }}
+        .results-table th, .results-table td {{ padding: 12px 14px; text-align: left; border-bottom: 1px solid #334155; font-size: 13px; }}
         .results-table th {{ background: #1e293b; color: #94a3b8; }}
+        .airline-pill {{ display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }}
+        .air-6E {{ background: #1e3a8a; color: #93c5fd; }}
+        .air-AI {{ background: #881337; color: #fecdd3; }}
+        .air-IX {{ background: #7c2d12; color: #fed7aa; }}
+        .air-QP {{ background: #451a03; color: #fde047; }}
+        .air-SG {{ background: #701a75; color: #f5d0fe; }}
         .price {{ font-family: monospace; font-weight: 600; color: #4ade80; }}
         .hash-box {{ background: #020617; padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #cbd5e1; word-break: break-all; margin-top: 10px; }}
     </style>
 </head>
 <body>
     <header>
-        <h1>APEX Ingestion Engine &bull; Live Preview</h1>
-        <span class="badge">Active Stage: STAGE 1</span>
+        <h1>APEX Multi-Carrier Ingestion &bull; Live Preview</h1>
+        <span class="badge">Non-OTA Direct Scheduled Carriers</span>
     </header>
     <main>
         <div class="control-card">
-            <h3>Select Route from Canonical Methodology Basket</h3>
+            <h3>Methodology Route & Carrier Inspection</h3>
             <div class="form-row">
+                <div class="form-group">
+                    <label>Airline Carrier (Non-OTA)</label>
+                    <select id="carrierSelect">{carriers_html}</select>
+                </div>
                 <div class="form-group">
                     <label>Route Basket (docs/methodology/route_basket.json)</label>
                     <select id="routeSelect">{routes_html}</select>
                 </div>
                 <div class="form-group">
-                    <label>Booking Window (docs/methodology/booking_windows.json)</label>
+                    <label>Booking Window (booking_windows.json)</label>
                     <select id="windowSelect">{windows_html}</select>
                 </div>
                 <div class="form-group" style="justify-content: flex-end;">
                     <button onclick="triggerPreview()">Capture Live Data</button>
                 </div>
             </div>
-            <div id="statusNotice" style="color: #38bdf8; font-size: 13px;">Ready to capture. Select route and click 'Capture Live Data'.</div>
+            <div id="statusNotice" style="color: #38bdf8; font-size: 13px;">Ready to capture. Select route & carrier, then click 'Capture Live Data'.</div>
         </div>
 
         <div class="control-card" id="outputCard" style="display: none;">
@@ -198,6 +231,7 @@ def run_web_dashboard(port: int = 8080):
             <table class="results-table">
                 <thead>
                     <tr>
+                        <th>Carrier</th>
                         <th>Flight #</th>
                         <th>Departure (UTC)</th>
                         <th>Arrival (UTC)</th>
@@ -214,12 +248,13 @@ def run_web_dashboard(port: int = 8080):
     </main>
     <script>
         async function triggerPreview() {{
+            const carrier = document.getElementById('carrierSelect').value;
             const route = document.getElementById('routeSelect').value;
             const windowCode = document.getElementById('windowSelect').value;
             const status = document.getElementById('statusNotice');
-            status.innerText = "Capturing observations for " + route + " (" + windowCode + ")...";
+            status.innerText = "Capturing observations for " + route + " (" + carrier + ")...";
 
-            const resp = await fetch("/api/preview?route=" + route + "&window=" + windowCode);
+            const resp = await fetch("/api/preview?route=" + route + "&window=" + windowCode + "&carrier=" + carrier);
             const data = await resp.json();
 
             status.innerText = "Captured " + data.observations.length + " observations successfully!";
@@ -231,8 +266,10 @@ def run_web_dashboard(port: int = 8080):
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             data.observations.forEach(o => {{
+                const airline = o.flight_identity.airline_iata;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
+                    <td><span class="airline-pill air-${{airline}}">${{airline}}</span></td>
                     <td><strong>${{o.flight_identity.flight_number}}</strong></td>
                     <td>${{o.flight_identity.departure_datetime}}</td>
                     <td>${{o.flight_identity.arrival_datetime}}</td>
@@ -254,22 +291,31 @@ def run_web_dashboard(port: int = 8080):
                 query = urllib.parse.parse_qs(parsed_url.query)
                 route_id = query.get("route", ["DEL-BOM"])[0]
                 window_id = query.get("window", ["T+15"])[0]
+                carrier_query = query.get("carrier", ["ALL"])[0]
 
-                collector = MockCollector()
-                orchestrator.collector = collector
                 tasks = orchestrator.generate_matrix(route_ids=[route_id], window_ids=[window_id])
                 task = tasks[0]
 
+                active_collectors = []
+                if carrier_query.upper() == "ALL":
+                    active_collectors = list(get_all_carrier_collectors().values())
+                else:
+                    active_collectors = [create_carrier_collector(carrier_query)]
+
+                all_obs = []
                 loop = asyncio.new_event_loop()
-                result = loop.run_until_complete(orchestrator.execute_task(task))
+                for c in active_collectors:
+                    orchestrator.collector = c
+                    res = loop.run_until_complete(orchestrator.execute_task(task))
+                    all_obs.extend(res.observations)
                 loop.close()
 
                 resp_data = {
                     "route": route_id,
                     "window": window_id,
                     "target_date": task.target_date.isoformat(),
-                    "raw_hash": result.raw_hash,
-                    "observations": [json.loads(o.model_dump_json()) for o in result.observations],
+                    "raw_hash": all_obs[0].raw_audit.raw_hash if all_obs else "-",
+                    "observations": [json.loads(o.model_dump_json()) for o in all_obs],
                 }
 
                 self.send_response(200)
@@ -281,10 +327,10 @@ def run_web_dashboard(port: int = 8080):
                 self.end_headers()
 
         def log_message(self, format, *args):
-            return  # Quiet logs
+            return
 
     server = HTTPServer(("127.0.0.1", port), DashboardHandler)
-    print(f"\n[APEX Dashboard] Live preview running at: http://localhost:{port}")
+    print(f"\n[APEX Dashboard] Multi-Carrier Live preview running at: http://localhost:{port}")
     print("[APEX Dashboard] Press Ctrl+C to terminate.")
     try:
         server.serve_forever()
@@ -296,68 +342,76 @@ def run_web_dashboard(port: int = 8080):
 async def run_cli_preview(
     route_id: str = "DEL-BOM",
     window_id: str = "T+15",
+    carrier: str = "6E",
     source: str = "mock",
     headful: bool = False,
     export: bool = True,
 ):
-    """Run CLI acquisition preview and output table."""
+    """Run CLI acquisition preview and output table across carriers."""
     orchestrator = RouteBasketOrchestrator()
     target_routes = [r.route_id for r in orchestrator.routes] if route_id.lower() == "all" else [route_id]
 
-    collector = None
-    if source == "playwright":
-        try:
-            collector = PlaywrightIndiGoCollector(headless=not headful)
-        except Exception as e:
-            logger.warning("Playwright initialization failed, falling back to mock: %s", e)
-            collector = MockCollector()
-    else:
-        collector = MockCollector()
-
-    orchestrator.collector = collector
+    target_carrier_codes = (
+        ["6E", "AI", "IX", "QP", "SG"] if carrier.lower() == "all" else [resolve_carrier_code(carrier)]
+    )
 
     for rid in target_routes:
         tasks = orchestrator.generate_matrix(route_ids=[rid], window_ids=[window_id])
         task = tasks[0]
 
-        print(f"\n>>> APEX Launching Acquisition: {rid} ({window_id}, Target: {task.target_date.isoformat()})...")
-        try:
-            result = await orchestrator.execute_task(task)
-        except Exception as e:
-            print(f"[!] Live acquisition encountered an issue: {e}")
-            print("[*] Replaying recorded fixture for demonstration...")
-            orchestrator.collector = MockCollector()
-            result = await orchestrator.execute_task(task)
+        combined_observations: list[FareObservation] = []
+        hashes = []
 
+        for code in target_carrier_codes:
+            meta = get_carrier_metadata(code)
+            collector = create_carrier_collector(code)
+            orchestrator.collector = collector
+
+            print(f"\n>>> APEX Launching Acquisition: {meta.name} ({code}) on {rid} ({window_id}, Target: {task.target_date.isoformat()})...")
+            try:
+                result = await orchestrator.execute_task(task)
+                combined_observations.extend(result.observations)
+                hashes.append(result.raw_hash)
+            except Exception as e:
+                logger.warning("Error fetching %s: %s", code, e)
+
+        source_label = "All Direct Scheduled Carriers" if len(target_carrier_codes) > 1 else target_carrier_codes[0]
         report_str = format_observation_table(
             route_id=rid,
             window_id=window_id,
             travel_date=task.target_date,
-            observations=result.observations,
-            raw_hash=result.raw_hash,
-            source_name=collector.name,
+            observations=combined_observations,
+            raw_hash=hashes[0] if hashes else "-",
+            source_name=source_label,
+            carrier_hint=carrier if carrier.lower() != "all" else None,
         )
         print(report_str)
 
-        if export:
+        if export and combined_observations:
             txt_path, json_path = export_verification_artifacts(
                 route_id=rid,
                 window_id=window_id,
                 travel_date=task.target_date,
-                observations=result.observations,
-                raw_payload=result.raw_payload,
-                raw_hash=result.raw_hash,
-                source_name=collector.name,
+                observations=combined_observations,
+                raw_payload=json.dumps([json.loads(o.model_dump_json()) for o in combined_observations], indent=2),
+                raw_hash=hashes[0] if hashes else "-",
+                source_name=source_label,
+                carrier_hint=carrier,
             )
             print(f"\n[+] Exported Text Report: {txt_path}")
             print(f"[+] Exported Raw Payload: {json_path}\n")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="APEX Live Acquisition Preview & Verification Viewer")
+    parser = argparse.ArgumentParser(description="APEX Live Multi-Carrier Acquisition Preview & Viewer")
     parser.add_argument("--mode", choices=["tui", "web"], default="tui", help="Preview mode (tui or web)")
-    parser.add_argument("--route", default="DEL-BOM", help="Basket Route ID (e.g. DEL-BOM, DEL-BLR)")
+    parser.add_argument("--route", default="DEL-BOM", help="Basket Route ID (e.g. DEL-BOM, DEL-BLR, all)")
     parser.add_argument("--window", default="T+15", help="Booking Window ID (e.g. T+1, T+7, T+15)")
+    parser.add_argument(
+        "--carrier",
+        default="6E",
+        help="Carrier code: 6E (IndiGo), AI (Air India), IX (Air India Express), QP (Akasa), SG (SpiceJet), or 'all'",
+    )
     parser.add_argument("--source", choices=["playwright", "mock"], default="mock", help="Collector source")
     parser.add_argument("--headful", action="store_true", help="Launch visible browser window for Playwright")
     parser.add_argument("--port", type=int, default=8080, help="Port for web dashboard")
@@ -371,6 +425,7 @@ def main():
             run_cli_preview(
                 route_id=args.route,
                 window_id=args.window,
+                carrier=args.carrier,
                 source=args.source,
                 headful=args.headful,
             )

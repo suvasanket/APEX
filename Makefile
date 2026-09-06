@@ -8,15 +8,18 @@ PYTHON ?= $(shell if [ -f $(VENV)/bin/python ]; then echo $(VENV)/bin/python; el
 
 help:
 	@echo "APEX Commands:"
-	@echo "  make test               Run all unit & synthetic tests"
-	@echo "  make test-unit          Run unit test suite"
-	@echo "  make test-synthetic     Run synthetic invariant test suite"
-	@echo "  make verify-stage-0     Verify Stage 0 contracts & specifications"
-	@echo "  make verify-stage-1     Verify Stage 1 data acquisition & collectors"
-	@echo "  make preview-live       Preview real-time acquisition in terminal"
-	@echo "  make preview-dashboard  Launch interactive live web preview dashboard"
-	@echo "  make scrape-basket      Run acquisition across methodology route basket"
-	@echo "  make clean              Remove bytecode and cache files"
+	@echo "  make test                 Run all unit & synthetic tests"
+	@echo "  make test-unit            Run unit test suite"
+	@echo "  make test-synthetic       Run synthetic invariant test suite"
+	@echo "  make verify-stage-0       Verify Stage 0 contracts & specifications"
+	@echo "  make verify-stage-1       Verify Stage 1 data acquisition & collectors"
+	@echo "  make preview-live         Preview real-time acquisition in terminal (IndiGo)"
+	@echo "  make preview-airindia     Preview Air India acquisition in terminal"
+	@echo "  make preview-akasa        Preview Akasa Air acquisition in terminal"
+	@echo "  make preview-all-carriers Preview consolidated market view (all direct carriers)"
+	@echo "  make preview-dashboard    Launch interactive live web preview dashboard"
+	@echo "  make scrape-basket        Run acquisition across methodology route basket"
+	@echo "  make clean                Remove bytecode and cache files"
 
 # Stage Verification Targets
 verify-stage-0:
@@ -31,15 +34,25 @@ verify-stage-1:
 	$(PYTHON) -m unittest discover -s tests/unit -p "test_raw_audit.py"
 	$(PYTHON) -m unittest discover -s tests/unit -p "test_*orchestrator*.py"
 	$(PYTHON) -m unittest discover -s tests/unit -p "test_*playwright*.py"
+	$(PYTHON) -m unittest discover -s tests/unit -p "test_*carrier*.py"
 
 preview-live:
-	$(PYTHON) -m apex.collectors.preview --mode=tui --route=DEL-BOM --window=T+15 --source=mock
+	$(PYTHON) -m apex.collectors.preview --mode=tui --route=DEL-BOM --window=T+15 --carrier=6E
+
+preview-airindia:
+	$(PYTHON) -m apex.collectors.preview --mode=tui --route=DEL-BOM --window=T+15 --carrier=AI
+
+preview-akasa:
+	$(PYTHON) -m apex.collectors.preview --mode=tui --route=DEL-BOM --window=T+15 --carrier=QP
+
+preview-all-carriers:
+	$(PYTHON) -m apex.collectors.preview --mode=tui --route=DEL-BOM --window=T+15 --carrier=all
 
 preview-dashboard:
 	$(PYTHON) -m apex.collectors.preview --mode=web --port=8080
 
 scrape-basket:
-	$(PYTHON) -m apex.collectors.preview --mode=tui --route=all --window=T+15 --source=mock
+	$(PYTHON) -m apex.collectors.preview --mode=tui --route=all --window=T+15 --carrier=6E
 
 
 test-unit:

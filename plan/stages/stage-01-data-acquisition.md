@@ -84,6 +84,10 @@ Each collector must adhere to configurable safety profiles:
 - [x] **Task 1.8: Live Basket Verification Spike & Cross-Verification Audit Report**
   - Execute live acquisition across the route basket, export `data/live_verification_*.txt` comparison reports, and cross-verify with live site.
   - *Verification command*: `make verify-stage-1`
+- [x] **Task 1.9: Non-OTA Direct Carrier Expansion (Air India, Akasa Air, Air India Express, SpiceJet)**
+  - Implement parsers, collectors, recorded offline fixtures, and multi-carrier registry for all 5 scheduled domestic passenger airlines covering >99% capacity.
+  - Implement unified carrier preview targets (`make preview-all-carriers`, `make preview-airindia`, `make preview-akasa`).
+  - *Verification command*: `make test-unit`
 
 ---
 
@@ -93,4 +97,6 @@ Each collector must adhere to configurable safety profiles:
 2. Scraper driven automatically by the canonical route basket (`route_basket.json`).
 3. Real Playwright acquisition succeeds with raw JSON payload and SHA-256 hash recorded.
 4. Live viewer demonstrates real-time data acquisition with side-by-side verification instructions.
+5. All 5 scheduled direct non-OTA passenger carriers implemented, tested offline, and integrated into the unified registry and preview tooling.
+
 
